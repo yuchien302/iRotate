@@ -1,0 +1,312 @@
+body {
+  font-size: 16px;
+  line-height: 1.5; 
+  background: #fafafa url(../images/body-bg.jpg) 0 0 repeat;
+  font-family: Helvetica, Arial, serif;
+  font-weight: 400;
+  /*color: #666;*/
+}
+
+header {
+  padding-top: 25px;
+  padding-bottom: 20px;
+  font-family: "Century Gothic", "Helvetica", Helvetica, Arial, serif; 
+  background: #2e7bcf url(../images/header-bg.jpg) 0 0 repeat-x;
+  border-bottom: solid 1px #275da1;
+  text-align: right;
+  padding-right:150px;
+  margin-bottom: 30px;
+}
+
+header h1 {
+  font-size: 60px;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 0.4em;
+}
+
+header p {
+  margin: 0;
+  /*font-size: 16px;*/
+  color: #fff;
+  line-height: 1.3;
+  
+}
+
+header p a{
+  color: #fff;
+  text-decoration: underline;
+}
+
+header p a:hover{
+  background-color: #fff;
+}
+
+
+
+#main-content h1{
+  border-bottom: 1px solid #eee;
+  font-family: 'Helvetica Neue', Helvetica, Arial, serif
+}
+
+#main-content h2{
+  font-size: 24px;
+  margin-top: 36px;
+  /*border-bottom: 1px solid #eee;*/
+}
+#main-content h3{
+  font-size: 18px;
+  /*margin-top: 36px;*/
+  /*border-bottom: 1px solid #eee;*/
+}
+#main-content section{
+  margin-bottom: 60px;
+}
+
+
+
+.table.image-holder th, .table.image-holder td { 
+     border: none; 
+ }
+
+
+
+.gallery > div {
+  padding: 0 5px;
+}
+
+.gallery img {
+  margin-bottom: 7px;
+}
+
+.HDR-content {
+  position: relative;
+}
+
+.HDR-content > div{
+  position: absolute;
+  bottom: 0px;
+  color: #fff;
+  width: 100%;
+  padding-left: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+
+.col-collapse {
+  padding: 0;
+}
+
+
+/*
+ * Side navigation
+ *
+ * Scrollspy and affixed enhanced navigation to highlight sections and secondary
+ * sections of docs content.
+ */
+
+/* By default it's not affixed in mobile views, so undo that */
+.bs-docs-sidebar.affix {
+  position: static;
+}
+.bs-docs-sidebar {
+    display: none;
+}
+@media (min-width: 768px) {
+  .bs-docs-sidebar {
+    padding-left: 20px;
+  }
+}
+
+/* First level of nav */
+.bs-docs-sidenav {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* All levels of nav */
+.bs-docs-sidebar .nav > li > a {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #999;
+  padding: 4px 20px;
+}
+.bs-docs-sidebar .nav > li > a:hover,
+.bs-docs-sidebar .nav > li > a:focus {
+  padding-left: 19px;
+  color: #563d7c;
+  text-decoration: none;
+  background-color: transparent;
+  border-left: 1px solid #563d7c;
+}
+.bs-docs-sidebar .nav > .active > a,
+.bs-docs-sidebar .nav > .active:hover > a,
+.bs-docs-sidebar .nav > .active:focus > a {
+  padding-left: 18px;
+  font-weight: bold;
+  color: #563d7c;
+  background-color: transparent;
+  border-left: 2px solid #563d7c;
+}
+
+/* Nav: second level (shown on .active) */
+.bs-docs-sidebar .nav .nav {
+  /* display: none; /* Hide by default, but at >768px, show it */
+  padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav > li > a {
+  padding-top:    1px;
+  padding-bottom: 1px;
+  padding-left: 30px;
+  font-size: 12px;
+  font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav > li > a:focus {
+  padding-left: 29px;
+}
+.bs-docs-sidebar .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav > .active:focus > a {
+  font-weight: 500;
+  padding-left: 28px;
+}
+
+
+
+
+
+
+
+/* Back to top (hidden on mobile) */
+.back-to-top {
+  /*display: none;*/
+  margin-top: 10px;
+  margin-left: 10px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #999;
+}
+.back-to-top:hover {
+  text-decoration: none;
+  color: #563d7c;
+}
+
+@media (min-width: 768px) {
+  .back-to-top {
+    display: block;
+  }
+}
+
+/* Show and affix the side nav when space allows it */
+@media (min-width: 992px) {
+    .bs-docs-sidebar {
+        display: block;
+    }
+  .bs-docs-sidebar .nav > .active > ul {
+    display: block;
+  }
+  /* Widen the fixed sidebar */
+  .bs-docs-sidebar.affix,
+  .bs-docs-sidebar.affix-bottom {
+    width: 213px;
+  }
+  .bs-docs-sidebar.affix {
+    position: fixed; /* Undo the static from mobile first approach */
+    top: 20px;
+  }
+  .bs-docs-sidebar.affix-bottom {
+    position: absolute; /* Undo the static from mobile first approach */
+  }
+  .bs-docs-sidebar.affix-bottom .bs-docs-sidenav,
+  .bs-docs-sidebar.affix .bs-docs-sidenav {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+@media (min-width: 1200px) {
+  /* Widen the fixed sidebar again */
+  .bs-docs-sidebar.affix-bottom,
+  .bs-docs-sidebar.affix {
+    width: 263px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  #artifacts-container p {
+      position: relative;
+  }
+
+  #artifacts-container .thumb-info{
+    display: block;
+    position: relative;
+    margin-bottom:35px;
+  }
+
+
+  #artifacts-container .region {
+    z-index: 50;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #artifacts-container .after {
+    right: 0px;
+  }
+
+  #artifacts-container .before {
+    right: 50%;
+  }
+
+  #artifacts-container img{
+    width: 100%;
+    vertical-align: bottom; /* Eliminate the space at the bottom.*/
+    background: #fff; /* Set white background for transparent thumbnails.*/
+    /*position: absolute;*/
+  }
+
+  /*// 'Before' thumbnail.*/
+  #artifacts-container img:first-child{
+
+  }
+
+  /*// 'After' thumbnail.*/
+  #artifacts-container img:last-child{
+    position: absolute;
+    left: 0; top: 0;
+  }
+  #artifacts-container .twinkling:last-child{
+    -webkit-animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-name: crossfade;
+  }
+
+
+
+@-webkit-keyframes crossfade {
+  from{
+    opacity: 0;
+  }
+
+  to{
+    opacity: 1;
+  }
+}

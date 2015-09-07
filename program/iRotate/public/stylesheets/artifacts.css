@@ -1,0 +1,64 @@
+
+  #artifacts-container p {
+      position: relative;
+  }
+
+  #artifacts-container .thumb-info{
+    display: block;
+    position: relative;
+    margin-bottom:35px;
+  }
+
+
+  #artifacts-container .region {
+    z-index: 50;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #artifacts-container .after {
+    right: 0px;
+  }
+
+  #artifacts-container .before {
+    right: 50%;
+  }
+
+  #artifacts-container img{
+    width: 100%;
+    vertical-align: bottom; /* Eliminate the space at the bottom.*/
+    background: #fff; /* Set white background for transparent thumbnails.*/
+    /*position: absolute;*/
+  }
+
+  /*// 'Before' thumbnail.*/
+  #artifacts-container img:first-child{
+
+  }
+
+  /*// 'After' thumbnail.*/
+  #artifacts-container img:last-child{
+    position: absolute;
+    left: 0; top: 0;
+  }
+  #artifacts-container .twinkling:last-child{
+    -webkit-animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-name: crossfade;
+  }
+
+
+
+@-webkit-keyframes crossfade {
+  from{
+    opacity: 0;
+  }
+
+  to{
+    opacity: 1;
+  }
+}

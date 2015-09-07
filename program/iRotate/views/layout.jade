@@ -1,0 +1,26 @@
+doctype html
+html
+  meta(charset="utf-8")
+  meta(name="viewport", content="width=device-width, initial-scale=1")
+  head
+    title iRotate
+    link(rel='stylesheet', href='/bootstrap-3.1.1-dist/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/jquery-ui-1.10.4.custom/css/smoothness/jquery-ui-1.10.4.custom.min.css')
+    link(rel='stylesheet', href='/stylesheets/header.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/artifacts.css')
+  body
+    block content
+    footer
+      div.container
+        div.row
+        //- div.col-md-12 This is footer
+
+    script(src='/javascripts/jquery-1.9.1.min.js')
+    //- script(src="/javascripts/jquery.ui.touch-punch.min.js")
+    script(src='/javascripts/jquery-rotate.js')
+    script(src='/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js')
+    script(src="/javascripts/socket.io.js")
+    script(src='/bootstrap-3.1.1-dist/js/bootstrap.min.js')
+    script(src='/javascripts/script.js')
+

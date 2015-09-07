@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    
+    
+    <link rel="stylesheet" type="text/css" href="bootstrap-3.1.1-dist/css/bootstrap.min.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="bootstrap-3.1.1-dist/css/bootstrap-theme.min.css"/> -->
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css"/>
+
+    <script type="text/javascript" src="javascripts/jquery.js"></script>
+    <script type="text/javascript" src="bootstrap-3.1.1-dist/js/bootstrap.js"></script>
+    <script type="text/javascript" src="javascripts/handlebar.js"></script>
+    <script type="text/javascript" src="javascripts/main.js"></script>
+
+
+    <title>VFX Final Project: Content-Aware Rotation</title>
+  </head>
+
+  <body data-spy="scroll" data-target=".mynavbar">
+<!--     <a href="https://github.com/raphael0914/VFX-Project1"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a> -->
+    
+
+    <header>
+      <h1>Content-Aware Rotation</h1>
+      <p>Final-Project@ Digital Visual Effects, Spring 2014 @ NTU </p>
+      <p>By <a href="#">Chan Yu-Chien</a>, <a href="#">Alice Lee</a>, and <a href="#">李柏希</a> </p>
+    </header>
+
+
+
+    <div class="container">
+      <div class="row">
+        <div id="main-content" class="col-md-9">
+          <section>
+            <h1 id="introduction">Introduction</h1>
+            <p>In this Final project, we implemented an ICCV 2013 paper: “<a href="http://research.microsoft.com/en-us/um/people/kahe/iccv13car/index.html">Content-Aware Rotation</a>” using Matlab. And we wrap it as a Web App using nodeJs.</p>
+            
+
+
+            <h2 id="introduction-usage">Usage</h2>
+            
+            <h3>Matlab</h3>
+            inside <code>program/</code> directory
+            simply type <code>I = main(rotate-angle, path-to-image)</code> and <code>I</code>will be the rotated image.
+
+            <h3>Web GUI</h3>
+            <p>with node and npm pre-install, using cmd <code>npm install</code> to install the package inside <code>program/iRotate/</code> directory</p>
+            <p>Than <code>npm start</code> to run the server</p>
+            <p>Go to localhost:3000 to use the GUI</p>
+                      
+          </section>
+
+
+<!-- 
+##       #### ##    ## ########    ######## ##     ## ######## 
+##        ##  ###   ## ##          ##        ##   ##     ##    
+##        ##  ####  ## ##          ##         ## ##      ##    
+##        ##  ## ## ## ######      ######      ###       ##    
+##        ##  ##  #### ##          ##         ## ##      ##    
+##        ##  ##   ### ##          ##        ##   ##     ##    
+######## #### ##    ## ########    ######## ##     ##    ##    
+-->
+          <section>
+
+            <h1 id="line-extraction">Line Extraction</h1>
+            
+<p>According to the paper, the first step is to extract the line out of input image using <a href="www.ipol.im/pub/art/2012/gjmr-lsd/">www.ipol.im/pub/art/2012/gjmr-lsd/</a>, and than quantize the line using mash grid so that each line segment is within single quad.</p>
+<p>If you are using node GUI, it will automatacally handle this step. If not, please go to <code>program/lsd_1.6</code> and follow the indtruction there. Make sure you put the result .txt file in the same directory with original image, and name it as 'image-file-name-with-suffix'.txt</p>
+
+          </section>
+
+
+
+
+<!-- 
+
+######## ##    ## ######## ########   ######   ##    ## 
+##       ###   ## ##       ##     ## ##    ##   ##  ##  
+##       ####  ## ##       ##     ## ##          ####   
+######   ## ## ## ######   ########  ##   ####    ##    
+##       ##  #### ##       ##   ##   ##    ##     ##    
+##       ##   ### ##       ##    ##  ##    ##     ##    
+######## ##    ## ######## ##     ##  ######      ##    
+-->
+
+
+
+
+          <section>
+            <h1 id="energy-function">Energy Function</h1>
+            <p>To solve the problem, This paper proposed a energy function in [1] based on the four properties below:</p>
+            <h2 id="energy-rotation">Rotation Manipulation</h2>
+            <img src="images/equation/eq6.PNG">
+
+
+            <p>where </p>
+            <img src="images/equation/eq12.PNG" style="width: 250px;"><br>
+            <p>Here strong constraints are only on the canonical(vertical/horizontal) lines, which affect non-canonical lines through smooth propagation.</p>
+
+<h2 id="energy-line">Line Preservation</h2>
+<img src="images/equation/eq7.PNG"><br>
+<p>where</p>
+<img src="images/equation/eq13.PNG"><br>
+<p>and</p>
+<img src="images/equation/eq14.PNG"><br>
+<p>The line preservation is important since it builds a line between the lines and the mesh vertices.</p>
+
+<h2 id="energy-shape">Shape Preservation</h2>
+<img src="images/equation/eq8.PNG"><br>
+<p>where</p>
+<img src="images/equation/eq9.PNG"><br>
+<p><img src="images/equation/var2.PNG">
+  denotes the four vertices of a deformed quad q and <img src="images/equation/var3.PNG"> are those of the input mesh.</p>
+<p>This contraint energy favors the each quad undergo a similarity transform.</p>
+
+<h2 id="energy-boundary">Boundary Preservation </h2>
+<img src="images/equation/eq10.PNG"><br>
+<p>This contraint avoids the image content going outside the boundary of an upright rectangular of the same size as the input image.</p>
+
+<p>Considering the four constraints above, the total energy thus becomes</p>
+<img src="images/equation/eq11.PNG"><br>
+<p>where <img src="images/equation/eq15.PNG"> and <img src="images/equation/eq16.PNG"><br></p>
+
+
+
+
+
+
+            <h2 id="energy-usage">Usage</h2>
+            For debugging purpose, we have caculateTotalEnergy function
+            <pre>function Etotal = caculateTotalEnergy(p, V, thetas, lines)
+
+%%% p: parameter object, comes from p = getParams(rotated-angle, path-to-image);
+%%% V: Vertex vector.
+%%% thetas: thetas vector.
+%%% lines: extracted lines vector.
+%%% Etotal: Total Energy.
+
+            </pre>
+            
+          </section>
+
+<p>To do optimization, the problem is divided into two subproblems</p>
+<p>a. Fix thata update V</p>
+<p>b. Fix V update theta</p>
+
+
+
+<!-- 
+
+ #######  ########  ######## #### ##     ## #### ######## ######## 
+##     ## ##     ##    ##     ##  ###   ###  ##       ##  ##       
+##     ## ##     ##    ##     ##  #### ####  ##      ##   ##       
+##     ## ########     ##     ##  ## ### ##  ##     ##    ######   
+##     ## ##           ##     ##  ##     ##  ##    ##     ##       
+##     ## ##           ##     ##  ##     ##  ##   ##      ##       
+ #######  ##           ##    #### ##     ## #### ######## ######## 
+ -->
+
+<section>
+  <h1 id="optimization">Optimization</h1>
+  <p>to optimize for total energy, there are two step: 
+    <ol>
+      <li>Fix theta update V</li>
+      <li>Fix V update theta</li>
+    </ol>
+  </p>
+  For each step we have one .m function for doing it.
+
+  <h2 id="thetaV">Fix theta update V</h2>
+  <p>In this part, the subproblem is to minimize:</p>
+  <img src="images/equation/eq17.PNG" style="width:250px;"><br>
+  <p>Since this is a quadratic function on V, the solution can be given by a sparse linear system. To implement this in Matlab, we try to formulate the problem into<img src="images/equation/eq18.PNG" style="width:150px;">
+
+  <br> where <img src="images/equation/eq19.PNG" style="width:250px;"><br> is the x,y coordinates of all vertices.</p>
+
+  <img src="images/equation/eq20.PNG"><br>
+  <img src="images/equation/eq21.PNG"><br>
+
+  <p>Thus, all the vertices can be solved.</p>
+
+
+
+
+  <h2 id="Vtheta">Fix V update theta</h2>
+  <p>In this part, the subproblem is to minimize:</p>
+  <img src="images/equation/function8.PNG" style="width:350px;"><br>
+  <p>This is a nontrivial problem due to the nonlinearity in the first term. We adopt a half-quadratic splitting technique to solve this problem.</p>
+
+  <p>we introduce auxiliary variables phi = [phi_k], each phi_k represents the individual rotation angle of line k (theta_m is the common rotation angle of the lines in bin m). We rewrite </p>
+  <img src="images/equation/function8.PNG" style="width:350px;"><br> as
+
+<img src="images/equation/function9-1.PNG" style="width:250px;"><img src="images/equation/function9-2.PNG" style="width:250px;"><br>
+
+  <p>where <img src="images/equation/head_Rk.PNG" style="width:200px;">, is a penalty weight and when ∞solution to (9) converges to (8). The half-quadratic splitting technique</p>
+  <p>warms up from a small and gradually increases it to ∞.In each step when has been fixed, the problem in (9) is split into two subproblems:(1) Fix theta update phi and (2) Fix phi update theta</p>
+
+  <h3>Fix theta update phi</h3>
+
+  <p>This problem is nonlinear, but the phi_k is independent of each other and can be solved separately. The subproblem involving phi_k is:</p>
+
+  <img src="images/equation/function10.PNG"><br>
+
+  <p>we can solve it using a gradient descent method, but here we adopt a simpler look-up method. Observing, when β=0, the problem is solve by <img src="images/equation/b0.PNG">. If β=∞, it is solved by <img src="images/equation/b1.PNG">. So we can divide the range <img src="images/equation/range.PNG"> into 100 discrete values, evaluate the cost in (10), and choose phi_k that minimize the cost.</p>
+
+  <h3>Fix phi update theta</h3>
+  <p>This subproblem is</p>
+
+  <img src="images/equation/function11-1.PNG"><br>
+  <p>This is a quadratic function on and is solved by a linear system. </p>
+
+  <p>To optimize the theta, <br>
+  (dx/dtheta)<img src="images/equation/function11.PNG">=0</p>
+
+  <p>Due to the overdetermined equations, we rewite differential of [11] in matrix type, that is
+  <img src="images/equation/matrix type.PNG">
+  can be rewritten as H=theta*h, which theta can be solved using Linear regression</p>
+
+
+
+          </section>
+
+<!-- 
+##      ##    ###    ########  ########  #### ##    ##  ######   
+##  ##  ##   ## ##   ##     ## ##     ##  ##  ###   ## ##    ##  
+##  ##  ##  ##   ##  ##     ## ##     ##  ##  ####  ## ##        
+##  ##  ## ##     ## ########  ########   ##  ## ## ## ##   #### 
+##  ##  ## ######### ##   ##   ##         ##  ##  #### ##    ##  
+##  ##  ## ##     ## ##    ##  ##         ##  ##   ### ##    ##  
+ ###  ###  ##     ## ##     ## ##        #### ##    ##  ######   
+ -->
+<section>
+<h1 id="warping">Warping</h1>
+<p>In our project, mesh warping is applied with vertices being the spline control points under Barycentric coordinates.</p>
+<img src="images/equation/fig4.PNG", style="width:100%;">
+
+<p>First, each grid mesh is separated into two triangles. </p>
+[fig1.PNG]
+
+<p>Then each triangle in the optimized mesh is transformed into Barycentric coordinates. So, the coordinates of every pixel point lies in the triangle can be represented as a combination of the coordinates of 3 vertices as <img src="images/equation/eq1.PNG"><img src="images/equation/fig2.PNG"></p>
+
+
+<p>Since the image plane is 2-dim, the linear combination can be revised as<br>
+<img src="images/equation/eq2.PNG", style="width:250px;"></p>
+ 
+
+<p>This can be written in matrix form</p>
+<img src="images/equation/eq3.PNG", style="width:300px;">
+
+<p>And we can solve </p>
+<img src="images/equation/eq4.PNG", style="width:300px;">
+
+
+<p>The most important reason that we apply Barycentric coordinates is because that the parameter set <img src="images/equation/eq3.PNG", style="width:300px;"> is the same for the corresponding point in the input mesh grid.
+<img src="images/equation/fig3.PNG", style="width:200px;"></p>
+
+
+ 
+<p>So, we can get the inverse warping function implicitly from
+<img src="images/equation/eq5.PNG", style="width:200px;"></p>
+
+<p>Then the image can be deformed by using bilinear interpolation and sampling from the corresponding points in the input image. </p>
+
+
+<h2 id="warping-usage">Usage</h2>
+<pre>function I = warpMesh(p,Vx,Vy)
+
+%%% Given img and f as the input image and its focal length,
+%%% p is a structure variable containing all the information for input image
+%%% Vx is the x coordinates of optimized grid mesh vertices
+%%% Vy is the y coordinates of optimized grid mesh vertices
+</pre>
+</section>
+
+
+
+<section>
+  <h1 id="discussion">Discussion</h1>
+  <p>There are plenty of arbitrary parameter need to be tune in this project including:</p>
+  <ul>
+    <li>weighted vector for different energy</li>
+    <li>grid size</li>
+    <li>rotated angle</li>
+  </ul>
+  <p>Here we only show the comparasion of last two, since this is the most important part for user perception.</p>
+  
+  <h2 id="discussion-grid">grid size</h2>
+  <p>since every extracted line must be quantized in to a single quad, the smaller the grid size, the more the line will be. </p>
+  <p>a 10 pixel quad in fig1 will result in 2917 lines, where 50 pixel quad only have 990 lines.
+  Ther number of lines and quad will heavily affect the speed of optimization in the order from 1 minutes to 2 hours.</p>
+  <img src="images/results/img1_grad_p50.png" style="width:400px">
+  <img src="images/results/img1_10_grid.png"  style="width:400px">
+  </p>
+
+  <h2 id="discussion-rotated">rotated angle</h2>
+  <p>since this paper use wrap to rotate the image, the rotated angle must not be too extrem.</p>
+  <p>from out primary experiment, if rotated more than 15 degree, user will notified the distortion of the image.</p>
+  <img src="images/results/img_1_line.png" style="width:400px">
+  <img src="images/results/img1_5.png" style="width:400px">
+  <img src="images/results/img1_10.png"  style="width:400px">
+  <img src="images/results/img1_15.png"  style="width:400px">
+  <p>distortion most likely to appear in the quad where no lines in it.</p>
+
+  <h2 id="discussion-overall">Overall performance</h2>
+  <p>From our observation, this method mostly work well on those picture that have the whole content in the middle, and backgronud such as sky or ground that can be distorted with noticed will be preferred. If the main content exceed the boundry of the picture, there will be distortion that user may noticed.</p>
+
+
+</section>
+
+
+<section>
+  <h1 id="what-we-learn">What we learn</h1>
+  <h2 id="alice">李品萱</h2>
+
+  This paper is a little hard for me at first. It took me a lot of time to understand how to formulate the sparse linear system in matrix form. Though similar things have been done in HDR, it still took some time to combine the energy equations together. Besides, I am amazed by the use of Barycentric coordinates when implementing mesh warping. Such mathematic tools are so powerful that difficult concepts can be easily solved. To sum up, the project is kind of challenging, but I did learn a lot from it.  
+
+
+
+
+  <h2 id="boxi">李柏希</h2>
+  This paper is very interesting. Due to poor skill on photographing, my pictures are sometimes tilting and I have to rotate them with some image processing software. Therefore, when we found this paper, we decided to implement it. I spent some times to understand the algorithm, and assigned jobs to each group member. For me, I countered problems when I implements linear regression method to minimize energy function. After google from web, finally find thw blind point and solve the problem. Although this project is challenging and not easy to implement, we really learn a lot from it.
+
+
+  <h2 id="raphael">詹雨謙</h2>
+  At first glance, I'm not convincing of the idea of using wraping to rotate images. But when we finish our system, the result really surprised me. And yet the algorithms purposed are so intuitive and easy to understand. <br>
+  I believe the reason we can understand and implement the algorithms so fast is mainly because the trainging of first and second project during this semaster. There are lots of implementation details undocumented in the paper. We put alot of efforts trying to figure out the optimization algoruthms for this project, and often we look back to lecture slide. When we finally unterstand the whole process, I understand lots of lecture material, which I only have some shallow understanding before final project. <br>
+  In sum, this project not only help me understand more about the lecture, and I really enjoy the results we got.
+</section>
+
+
+<!-- 
+
+ ######      ###    ##       ##       ######## ########  ##    ## 
+##    ##    ## ##   ##       ##       ##       ##     ##  ##  ##  
+##         ##   ##  ##       ##       ##       ##     ##   ####   
+##   #### ##     ## ##       ##       ######   ########     ##    
+##    ##  ######### ##       ##       ##       ##   ##      ##    
+##    ##  ##     ## ##       ##       ##       ##    ##     ##    
+ ######   ##     ## ######## ######## ######## ##     ##    ##    
+ -->
+          <h1 id="gallery">Gallery</h1>
+
+<!-- <div class="container"> -->
+          <div class="row">
+            <div class="col-md-10">
+
+              <div id="artifacts-container">
+                <p class="thumb-info">
+                  <span class="region before"></span>
+                  <span class="region after"></span>
+                  <img class="twinkling", src="./images/input/fig1.png"></img>
+                  <img class="twinkling", src="./images/results/fig1_result.png"></img>
+                </p>
+              </div>
+
+              <div id="artifacts-container">
+                <p class="thumb-info">
+                  <span class="region before"></span>
+                  <span class="region after"></span>
+                  <img class="twinkling", src="./images/input/fig2.png"></img>
+                  <img class="twinkling", src="./images/results/fig2_result.png"></img>
+                </p>
+              </div>
+
+              <div id="artifacts-container">
+                <p class="thumb-info">
+                  <span class="region before"></span>
+                  <span class="region after"></span>
+                  <img class="twinkling", src="./images/input/fig3.png"></img>
+                  <img class="twinkling", src="./images/results/fig3_result.png"></img>
+                </p>
+              </div>
+
+              <div id="artifacts-container">
+                <p class="thumb-info">
+                  <span class="region before"></span>
+                  <span class="region after"></span>
+                  <img class="twinkling", src="./images/input/fig4.JPG"></img>
+                  <img class="twinkling", src="./images/results/fig4_result.JPG"></img>
+                </p>
+              </div>
+
+              <div id="artifacts-container">
+                <p class="thumb-info">
+                  <span class="region before"></span>
+                  <span class="region after"></span>
+                  <img class="twinkling", src="./images/input/fig5.JPG"></img>
+                  <img class="twinkling", src="./images/results/fig5_result.JPG"></img>
+                </p>
+              </div>
+              <div id="artifacts-container">
+                <p class="thumb-info">
+                  <span class="region before"></span>
+                  <span class="region after"></span>
+                  <img class="twinkling", src="./images/input/fig8.jpg"></img>
+                  <img class="twinkling", src="./images/results/fig8_result.jpg"></img>
+                </p>
+              </div>
+
+
+              <div id="artifacts-container">
+                <p class="thumb-info">
+                  <span class="region before"></span>
+                  <span class="region after"></span>
+                  <img class="twinkling", src="./images/input/fig9.jpg"></img>
+                  <img class="twinkling", src="./images/results/fig9_result_4.jpg"></img>
+                </p>
+              </div>
+
+              <div id="artifacts-container">
+                <p class="thumb-info">
+                  <span class="region before"></span>
+                  <span class="region after"></span>
+                  <img class="twinkling", src="./images/input/fig10.jpg"></img>
+                  <img class="twinkling", src="./images/results/fig10_result_-4.75.jpg"></img>
+                </p>
+              </div>
+          </div>
+        </div>
+<!-- </div> -->
+
+
+
+        </div>
+        
+        <div class="col-md-3">
+          <div class="bs-docs-sidebar hidden-print" id="my-affix"  data-spy="affix" data-offset-top="221" data-offset-bottom="200" role="complementary">
+            
+
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+
+
+  <script>document.write('<script src="file://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+
+
+  
+
+  <script id="navbar-template" type="text/x-handlebars-template">
+    <ul class="nav bs-docs-sidenav">
+      {{#each .}}
+      <li class="">
+        <a href={{href}}>{{title}}</a>
+        <ul class="nav">
+          {{#each subnav}}
+          <li class=""><a href={{href}}>{{title}}</a></li>
+          {{/each}}
+        </ul>
+      </li>
+
+      {{/each}}
+    </ul>
+    <a class="back-to-top" href="#top">Back to top</a>   
+  </script>
+
+  </body>
+</html>
